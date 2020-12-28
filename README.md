@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-    ConventionalCommitsKit is a small library to create and parse <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commit</a> conforming representations.
+   ConventionalCommitsKit is a small library to create and parse <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commit</a> conforming representations.
 </p>
 
 ## Installation
@@ -43,10 +43,10 @@ At first import `ConventionalCommitsKit`
 import ConventionalCommitsKit
 ```
 
-Define a `SemanticVersion` based on a commit message. Be aware that the parsing can fail and the initializer will return `nil` in that case.
+Define a `SemanticVersion` based on a commit message. Be aware that the parsing can fail and the initializer will return `nil` in that case. After successfully creating a `ConventionalCommit` you have access to all of its properties
 
 ```swift
-  let commitMessage = """
+let commitMessage = """
 fix: correct minor typos in code
 
 see the issue for details

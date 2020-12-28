@@ -1,0 +1,13 @@
+name: CI
+
+on: [push]
+
+jobs:
+  tests:
+    name: Unit-Tests
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: run unit tests
+        run: |
+          swift test --enable-code-coverage
