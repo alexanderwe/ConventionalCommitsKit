@@ -9,7 +9,7 @@
    </a>
 
    <a href="https://github.com/alexanderwe/ConventionalCommitsKit">
-      <img src="https://github.com/alexanderwe/ConventionalCommitsKit/workflows/CI/badge.svg" alt="CI">
+      <img src="https://github.com/alexanderwe/ConventionalCommitsKit/workflows/Main%20Branch%20CI/badge.svg" alt="CI">
    </a>
 </p>
 
