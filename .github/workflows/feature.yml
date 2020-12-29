@@ -1,0 +1,18 @@
+name: Feature Branch CI
+on:
+  push:
+    branches:
+      - "develop"
+      - "feature/*"
+      - "hotfix/*"
+
+jobs:
+  tests:
+    name: Unit-Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run unit tests
+        run: |
+          swift test --enable-code-coverage

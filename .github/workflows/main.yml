@@ -1,13 +1,37 @@
-name: CI
-
-on: [push]
+name: Main Branch CI
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   tests:
     name: Unit-Tests
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: run unit tests
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run unit tests
         run: |
           swift test --enable-code-coverage
+  update_documentation:
+    name: Update Documentation
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Generate Documentation
+        uses: SwiftDocOrg/swift-doc@master
+        with:
+          inputs: "Sources"
+          module-name: ConventionalCommits
+          output: "docs"
+          format: "html"
+          base-url: "https://alexanderwe.github.io/ConventionalCommitsKit"
+      - name: Commit documentation
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add ./docs/**
+          git commit -m "Generate documentation"
+          git push
