@@ -15,17 +15,17 @@ jobs:
         run: |
           swift test --enable-code-coverage
   update_documentation:
-    name: Update Documentation
+    name: Update documentation
     runs-on: ubuntu-latest
     needs: tests
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Generate Documentation
+      - name: Generate documentation
         uses: SwiftDocOrg/swift-doc@master
         with:
           inputs: "Sources"
-          module-name: ConventionalCommits
+          module-name: ConventionalCommitsKit
           output: "docs"
           format: "html"
           base-url: "https://alexanderwe.github.io/ConventionalCommitsKit"
