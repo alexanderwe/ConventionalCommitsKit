@@ -8,32 +8,41 @@
 import Parsing
 
 // MARK: - Conventional Commit
+
+/// Type safe representation of a Conventional Commit
 public struct ConventionalCommit {
    
+    /// Internal encapsulations
     private let _header: Header
     private let _body: String?
     private let _footers: [Footer]
     
+    /// The type of commit
     public var type: String {
         return _header.type
     }
     
+    /// Optional scope of the commit
     public var scope: String? {
         return _header.scope
     }
     
+    /// Single line description of the contents of the commit
     public var description: String {
         return _header.description
     }
     
+    /// Flag for a breaking change commit
     public var isBreaking: Bool {
         return _header.breaking || _footers.map { $0.isBreaking }.contains(true)
     }
     
+    /// An optional longer, possibly multiline/multiparagraph, body commit message
     public var body: String? {
         return _body
     }
     
+    /// List of footers
     public var footers: [Footer] {
         return _footers
     }
@@ -42,6 +51,7 @@ public struct ConventionalCommit {
 // MARK: Parser
 extension ConventionalCommit {
     
+    /// A parser capable of parsing a `ConventionalCommit` of a `Substring`
     private static let parser: AnyParser<Substring, ConventionalCommit> = {
         
         // When the body is empty the body will be nil
@@ -114,11 +124,19 @@ extension ConventionalCommit {
 extension ConventionalCommit {
     internal struct Header {
         
+        /// The type of commit
         let type: String
+        
+        /// Optional scope of the commit
         let scope: String?
+        
+        /// Flag for a breaking change commit
         let breaking: Bool
+        
+        /// Single line description of the contents of the commit
         let description: String
         
+        /// A parser capable of parsing a `Header` of a `Substring`
         static let parser: AnyParser<Substring, Header> = {
             
             let anyScope = Prefix<Substring> {  $0 != "(" && $0 != ")" && !$0.isNewline }
@@ -184,10 +202,16 @@ extension ConventionalCommit {
 extension ConventionalCommit {
     public struct Footer {
        
+        /// A free of choice word token
         public let wordToken: String
+        
+        /// String representation of the value of the word token
         public let value: String
+        
+        /// Flag for a breaking change commit
         public let isBreaking: Bool
         
+        /// A parser capable of parsing a `Footer` of a `Substring`
         static let parser: AnyParser<Substring, Footer> = {
            
             let breakingWordToken = StartsWith<Substring>("BREAKING CHANGE")

@@ -34,5 +34,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add ./docs/**
-          git commit -m "Generate documentation"
+          git commit -m "chore(documentation): Generate documentation"
           git push
