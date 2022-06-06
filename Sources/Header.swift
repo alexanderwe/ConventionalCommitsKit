@@ -30,6 +30,8 @@ extension ConventionalCommit {
         let description: String
 
         // MARK: - Parser
+
+        /// A parser capable of parsing a `Header` of a `Substring`
         static let parser: AnyParser<Substring, Header> = {
 
             let type = Prefix { $0.isLetter }
@@ -76,5 +78,6 @@ extension ConventionalCommit {
         internal init(input: String) throws {
             self = try Self.parser.parse(input)
         }
+
     }
 }

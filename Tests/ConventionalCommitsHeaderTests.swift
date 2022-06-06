@@ -76,9 +76,6 @@ final class ConventionalCommitsHeaderTests: XCTestCase {
         : Fix iOS and tvOS versions
         """
 
-        let commit = try ConventionalCommit.Header(input: commitMessage)
-        print(commit)
-
         XCTAssertThrowsError(try ConventionalCommit.Header(input: commitMessage))
     }
     
