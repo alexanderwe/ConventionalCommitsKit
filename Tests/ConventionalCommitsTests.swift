@@ -11,8 +11,8 @@ import XCTest
 
 final class ConventionalCommitsTests: XCTestCase {
 
-    func testNoBody() throws {
-        let commitMessage = "fix: Fix iOS and tvOS version"
+    func testDescriptionAndNoBody() throws {
+        let commitMessage = "fix: Fix iOS and tvOS versions"
 
         let commit = try ConventionalCommit(input: commitMessage)
 
@@ -24,13 +24,32 @@ final class ConventionalCommitsTests: XCTestCase {
         XCTAssertEqual(commit.footers.count, 0)
     }
 
+    func testDescriptionAndBody() throws {
+        let commitMessage = """
+            fix(dependencies): Fix parsing library
+
+            Update version dependencies
+            """
+
+        let commit = try ConventionalCommit(input: commitMessage)
+
+        XCTAssertEqual(commit.type, "fix")
+        XCTAssertEqual(commit.description, "Fix parsing library")
+        XCTAssertEqual(commit.scope, "dependencies")
+        XCTAssertEqual(commit.isBreaking, false)
+        XCTAssertEqual(commit.body, "Update version dependencies")
+        XCTAssertEqual(commit.footers.count, 0)
+    }
+
+
+
     func testDescriptionAndBreakingChangeFooter() throws {
 
         let commitMessage = """
-        feat: allow provided config object to extend other configs
+            feat: allow provided config object to extend other configs
 
-        BREAKING CHANGE: `extends` key in config file is now used for extending other config files
-        """
+            BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+            """
 
         let commit = try ConventionalCommit(input: commitMessage)
 
@@ -49,10 +68,10 @@ final class ConventionalCommitsTests: XCTestCase {
     func testBreakingChangeHeaderWithFooter() throws {
 
         let commitMessage = """
-        refactor!: drop support for Node 6
+            refactor!: drop support for Node 6
 
-        Reviewed-by: Z
-        """
+            Reviewed-by #Z
+            """
 
         let commit = try ConventionalCommit(input: commitMessage)
 
@@ -105,12 +124,4 @@ final class ConventionalCommitsTests: XCTestCase {
         XCTAssertEqual(commit.footers[1].wordToken, "Refs")
         XCTAssertEqual(commit.footers[1].value, "133")
     }
-
-
-    static var allTests = [
-        ("testNoBody", testNoBody),
-        ("testDescriptionAndBreakingChangeFooter", testDescriptionAndBreakingChangeFooter),
-        ("testBreakingChangeHeaderWithFooter", testBreakingChangeHeaderWithFooter),
-        ("testMultiParagraphBodyAndMultipleFooters", testMultiParagraphBodyAndMultipleFooters)
-    ]
 }

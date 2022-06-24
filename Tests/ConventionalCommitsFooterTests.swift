@@ -58,13 +58,14 @@ final class ConventionalCommitsFooterTests: XCTestCase {
         let parser = Many {
             ConventionalCommit.Footer.parser
           } separator: {
-              "\n"
+              Whitespace(1, .vertical)
           }
 
+        // Be aware, indentation is important here, in order to not add unexpected whitespaces before the lines
         let footerMessage = """
-        Reviewed-by: Z\n
-        Refs #133
-        """
+            Reviewed-by: Z
+            Refs #133
+            """
 
         let footers = try parser.parse(footerMessage)
 

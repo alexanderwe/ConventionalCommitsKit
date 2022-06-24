@@ -61,7 +61,10 @@ extension ConventionalCommit {
                 scope
                 isBreaking
                 ": "
-                Rest().map(String.init)
+                OneOf {
+                    PrefixUpTo("\n").map(String.init)
+                    Rest().map(String.init)
+                }
             }
 
             return header.eraseToAnyParser()

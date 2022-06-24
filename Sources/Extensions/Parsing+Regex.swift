@@ -8,6 +8,11 @@
 import Foundation
 import Parsing
 
+
+enum ConventionalCommitParsingError: Error {
+    case prefixDoesNotMatch
+}
+
 internal struct PrefixUpToRegex<Input>: Parser {
     
     public let regex: String
@@ -19,7 +24,7 @@ internal struct PrefixUpToRegex<Input>: Parser {
     
     @inlinable
     @inline(__always)
-    func parse(_ input: inout Substring) -> Substring? {
+    func parse(_ input: inout Substring) throws -> Substring {
         let strInput = String(input)
         let regex = try! NSRegularExpression(pattern: self.regex, options: NSRegularExpression.Options.caseInsensitive)
         let regexMatches = regex.matches(in: strInput, options: [], range: NSRange(location: 0, length: input.utf16.count))
@@ -27,7 +32,7 @@ internal struct PrefixUpToRegex<Input>: Parser {
         guard let regexMatch = regexMatches.first,
               let range = Range(regexMatch.range(at: 1), in: input)
         else {
-            return nil
+            throw ConventionalCommitParsingError.prefixDoesNotMatch
         }
         
         let endIndex = range.lowerBound

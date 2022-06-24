@@ -26,7 +26,7 @@ extension ConventionalCommit {
         /// A parser capable of parsing a `Footer` of a `Substring`
         static let parser: AnyParser<Substring, Footer> = {
 
-            let wordToken = Prefix<Substring> { $0.isLetter || $0.isNumber || $0.isSymbol || $0 == "-" || $0.isWhitespace }
+            let wordToken = Prefix<Substring> { $0.isLetter || $0.isNumber || $0.isSymbol || $0 == "-" }
                 .eraseToAnyParser()
 
             let seperator = OneOf {
@@ -34,10 +34,12 @@ extension ConventionalCommit {
                 " #"
             }
 
+            let rest = Prefix<Substring> { !$0.isWhitespace }
+
             let footer = Parse {
                 wordToken
                 seperator
-                Prefix { !$0.isNewline }.map(String.init)
+                rest
             }.map { wordToken, value in
                 return Footer(
                     wordToken: String(wordToken),

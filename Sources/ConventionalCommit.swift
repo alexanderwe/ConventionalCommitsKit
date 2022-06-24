@@ -82,36 +82,43 @@ extension ConventionalCommit {
         // 4. BREAKING-CHANGE token without a new line
         // 5. <Any hypen seperatable word>:<space> or <Any hypen seperatable word><space>#  after a new line
         // 6. <Any hypen seperatable word>:<space> or <Any hypen seperatable word><space>#  without a new line
-        let bodyParser: AnyParser<Substring, Substring?> = Parse {
-            Skip { "\n" }
+        let bodyParser: AnyParser<Substring, Substring> = Parse {
+            Skip {
+                Whitespace(2, .vertical)
+            }
             OneOf {
                 PrefixUpToRegex<Substring>("[\\n]?(BREAKING CHANGE|BREAKING-CHANGE)")
                 PrefixUpToRegex<Substring>("[\\n]?(((?=\\S*['-]?)([a-zA-Z'-]+):\\s)|((?=\\S*['-]?)([a-zA-Z'-]+)\\s\\#))")
+                PrefixUpTo("\n")
+                Rest()
             }
         }.eraseToAnyParser()
 
         let footersParser: AnyParser<Substring, [Footer]> = Parse {
             Skip {
-                "\n"
-                "\n"
+                Whitespace(2, .vertical)
             }
             Many {
                 ConventionalCommit.Footer.parser
             } separator: {
-                "\n"
+                Whitespace(1, .vertical)
             }
         }.eraseToAnyParser()
 
         let parser = Parse {
             ConventionalCommit.Header.parser
-            bodyParser
-            Optionally { footersParser }
+            Optionally {
+                bodyParser
+            }
+            Optionally {
+                footersParser
+            }
         }
         .map { (header, body, footers) in
             ConventionalCommit(
                 header: header,
-                body: convertSubstringToBody(substring: body)?.trimmingCharacters(in: .newlines),
-                footers: footers == nil ? []: footers!
+                body: convertSubstringToBody(substring: body),
+                footers: footers ?? []
             )
         }
         .eraseToAnyParser()
