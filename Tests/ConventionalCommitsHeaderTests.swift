@@ -11,17 +11,14 @@ import XCTest
 
 /// Tests related to parsing footers of a conventional commit message
 final class ConventionalCommitsHeaderTests: XCTestCase {
-
-    // MARK: - Tests
-
+    
     func testNoScope() throws {
-        // Given
-        let commitMessage = "fix: Fix iOS and tvOS versions"
-
-        // When
-        let commit = try ConventionalCommit.Header(input: commitMessage)
-
-        // Then
+        let commitMessage = """
+        fix: Fix iOS and tvOS versions
+        """
+        
+        let commit = try XCTUnwrap(ConventionalCommit.Header(data: commitMessage))
+        
         XCTAssertEqual(commit.type, "fix")
         XCTAssertNil(commit.scope)
         XCTAssertEqual(commit.breaking, false)
@@ -29,13 +26,12 @@ final class ConventionalCommitsHeaderTests: XCTestCase {
     }
     
     func testWithScope() throws {
-        // Given
-        let commitMessage = "fix(ci): Fix iOS and tvOS versions"
-
-        // When
-        let commit = try ConventionalCommit.Header(input: commitMessage)
-
-        // Then
+        let commitMessage = """
+        fix(ci): Fix iOS and tvOS versions
+        """
+        
+        let commit = try XCTUnwrap(ConventionalCommit.Header(data: commitMessage))
+        
         XCTAssertEqual(commit.type, "fix")
         XCTAssertEqual(commit.scope, "ci")
         XCTAssertEqual(commit.breaking, false)
@@ -43,13 +39,12 @@ final class ConventionalCommitsHeaderTests: XCTestCase {
     }
     
     func testBreakingChange() throws {
-        // Given
-        let commitMessage = "fix!: Fix iOS and tvOS versions"
-
-        // When
-        let commit = try ConventionalCommit.Header(input: commitMessage)
-
-        // Then
+        let commitMessage = """
+        fix!: Fix iOS and tvOS versions
+        """
+        
+        let commit = try XCTUnwrap(ConventionalCommit.Header(data: commitMessage))
+        
         XCTAssertEqual(commit.type, "fix")
         XCTAssertNil(commit.scope)
         XCTAssertEqual(commit.breaking, true)
@@ -57,13 +52,12 @@ final class ConventionalCommitsHeaderTests: XCTestCase {
     }
     
     func testBreakingChangeWithScope() throws {
-        // Given
-        let commitMessage = "fix(ci)!: Fix iOS and tvOS versions"
-
-        // When
-        let commit = try ConventionalCommit.Header(input: commitMessage)
-
-        // Then
+        let commitMessage = """
+        fix(ci)!: Fix iOS and tvOS versions
+        """
+        
+        let commit = try XCTUnwrap(ConventionalCommit.Header(data: commitMessage))
+        
         XCTAssertEqual(commit.type, "fix")
         XCTAssertEqual(commit.scope, "ci")
         XCTAssertEqual(commit.breaking, true)
@@ -71,20 +65,28 @@ final class ConventionalCommitsHeaderTests: XCTestCase {
     }
     
     func testMissingDescription() throws {
-
-        // Given
-        let commitMessage = "fix(ci)!:"
-
-        // Then
-        XCTAssertThrowsError(try ConventionalCommit.Header(input: commitMessage))
+        let commitMessage = """
+        fix(ci)!:
+        """
+        
+        XCTAssertNil(ConventionalCommit.Header(data: commitMessage))
     }
     
     func testMissingType() throws {
-        // Given
-        let commitMessage = ": Fix iOS and tvOS versions"
-
-        // Then
-        XCTAssertThrowsError(try ConventionalCommit.Header(input: commitMessage))
+        let commitMessage = """
+        : Fix iOS and tvOS versions
+        """
+        
+        XCTAssertNil(ConventionalCommit.Header(data: commitMessage))
     }
+    
+    static var allTests = [
+        ("testNoScope", testNoScope),
+        ("testWithScope", testWithScope),
+        ("testBreakingChange", testBreakingChange),
+        ("testBreakingChangeWithScope", testBreakingChangeWithScope),
+        ("testMissingDescription", testMissingDescription),
+        ("testMissingType", testMissingType),
+    ]
 }
 
