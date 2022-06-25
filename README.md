@@ -43,7 +43,7 @@ At first import `ConventionalCommitsKit`
 import ConventionalCommitsKit
 ```
 
-Define a `SemanticVersion` based on a commit message. Be aware that the parsing can fail and the initializer will return `nil` in that case. After successfully creating a `ConventionalCommit` you have access to all of its properties
+Define a `ConventionalCommit` based on a commit message. Be aware that the parsing can fail and throw an appropriate error.
 
 ```swift
 let commitMessage = """
@@ -57,9 +57,7 @@ Reviewed-by #Z
 Refs #133
 """
 
-guard let commit = ConventionalCommit(data: commitMessage) else {
-   return
-}
+let commit = try ConventionalCommit(input: commitMessage)
 ```
 
 ## Contributing

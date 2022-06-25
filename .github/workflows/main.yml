@@ -10,25 +10,33 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Setup Swift version
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "5.6.0"
       - name: Run unit tests
         run: |
           swift test --enable-code-coverage
   update_documentation:
     name: Update documentation
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: tests
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Generate documentation
-        uses: SwiftDocOrg/swift-doc@master
+        uses: actions/checkout@v3
+      - name: Setup Swift version
+        uses: swift-actions/setup-swift@v1
         with:
-          inputs: "Sources"
-          module-name: ConventionalCommitsKit
-          output: "docs"
-          format: "html"
-          base-url: "https://alexanderwe.github.io/ConventionalCommitsKit"
+          swift-version: "5.6.0"
+      - name: Generate documentation
+        uses: fwcd/swift-docc-action@v1
+        with:
+          target: ConventionalCommitsKit
+          output: ./docs
+          hosting-base-path: ConventionalCommitsKit
+          disable-indexing: 'true'
+          transform-for-static-hosting: 'true'
       - name: Commit documentation
         run: |
           git config user.name github-actions
