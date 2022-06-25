@@ -13,8 +13,9 @@ import Parsing
 /// Tests related to parsing footers of a conventional commit message
 final class ConventionalCommitsFooterTests: XCTestCase {
 
-    func testSingleBreakingChange() throws {
+    // MARK: - Tests
 
+    func testSingleBreakingChange() throws {
         // Given
         let footerMessage = "BREAKING CHANGE: refactor to use JavaScript features not available in Node 6."
 
@@ -28,29 +29,39 @@ final class ConventionalCommitsFooterTests: XCTestCase {
     }
 
     func testSingleBreakingChangeHypen() throws {
+        // Given
         let footerMessage = "BREAKING-CHANGE: refactor to use JavaScript features not available in Node 6."
+
+        // When
         let footer = try ConventionalCommit.Footer(input: footerMessage)
 
+        // Then
         XCTAssertEqual(footer.wordToken, "BREAKING-CHANGE")
         XCTAssertEqual(footer.value, "refactor to use JavaScript features not available in Node 6.")
         XCTAssertEqual(footer.isBreaking, true)
     }
 
     func testSingleColonSeperated() throws {
-
+        // Given
         let footerMessage = "Reviewed-by: Z"
+
+        // When
         let footer = try ConventionalCommit.Footer(input: footerMessage)
 
+        // Then
         XCTAssertEqual(footer.wordToken, "Reviewed-by")
         XCTAssertEqual(footer.value, "Z")
         XCTAssertEqual(footer.isBreaking, false)
     }
 
     func testSingleHashtagSeperated() throws {
-
+        // Given
         let footerMessage = "Refs #133"
+
+        // Then
         let footer = try ConventionalCommit.Footer(input: footerMessage)
 
+        // When
         XCTAssertEqual(footer.wordToken, "Refs")
         XCTAssertEqual(footer.value, "133")
         XCTAssertEqual(footer.isBreaking, false)
@@ -58,21 +69,22 @@ final class ConventionalCommitsFooterTests: XCTestCase {
 
 
     func testMultipleFooters() throws {
-
+        // Given
         let parser = Many {
             ConventionalCommit.Footer.parser
           } separator: {
               Whitespace(1, .vertical)
           }
 
-        // Be aware, indentation is important here, in order to not add unexpected whitespaces before the lines
         let footerMessage = """
-            Reviewed-by: Z
-            Refs #133
-            """
-
+        Reviewed-by: Z
+        Refs #133
+        """
+        
+        // When
         let footers = try parser.parse(footerMessage)
 
+        // Then
         XCTAssertEqual(footers.count, 2)
         XCTAssertEqual(footers[0].wordToken , "Reviewed-by")
         XCTAssertEqual(footers[0].value , "Z")

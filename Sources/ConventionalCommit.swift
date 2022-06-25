@@ -131,7 +131,7 @@ extension ConventionalCommit {
         self._footers = footers
     }
 
-    internal init(input: String) throws {
+    public init(input: String) throws {
         self = try Self.parser.parse(input)
     }
 }

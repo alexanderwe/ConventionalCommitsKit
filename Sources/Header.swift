@@ -81,6 +81,5 @@ extension ConventionalCommit {
         internal init(input: String) throws {
             self = try Self.parser.parse(input)
         }
-
     }
 }

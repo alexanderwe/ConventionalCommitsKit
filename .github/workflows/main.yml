@@ -16,19 +16,19 @@ jobs:
           swift test --enable-code-coverage
   update_documentation:
     name: Update documentation
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: tests
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Generate documentation
-        uses: SwiftDocOrg/swift-doc@master
+        uses: fwcd/swift-docc-action@v1
         with:
-          inputs: "Sources"
-          module-name: ConventionalCommitsKit
-          output: "docs"
-          format: "html"
-          base-url: "https://alexanderwe.github.io/ConventionalCommitsKit"
+          target: ConventionalCommitsKit
+          output: ./docs
+          hosting-base-path: ConventionalCommitsKit
+          disable-indexing: 'true'
+          transform-for-static-hosting: 'true'
       - name: Commit documentation
         run: |
           git config user.name github-actions
