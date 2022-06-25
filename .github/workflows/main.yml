@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Setup Swift version
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "5.6.0"
       - name: Run unit tests
         run: |
           swift test --enable-code-coverage
@@ -21,6 +25,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Setup Swift version
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "5.6.0"
       - name: Generate documentation
         uses: fwcd/swift-docc-action@v1
         with:
