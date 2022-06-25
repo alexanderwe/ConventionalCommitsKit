@@ -29,15 +29,28 @@ extension ConventionalCommit {
             let wordToken = Prefix<Substring> { $0.isLetter || $0.isNumber || $0.isSymbol || $0 == "-" }
                 .eraseToAnyParser()
 
+            let breakingWordToken: AnyParser<Substring, Substring> = StartsWith<Substring>("BREAKING CHANGE")
+                .map { _ in "BREAKING CHANGE"[...] }
+                .eraseToAnyParser()
+
+            let breakingWordHyphenToken: AnyParser<Substring, Substring> = StartsWith<Substring>("BREAKING-CHANGE")
+                .map { _ in "BREAKING-CHANGE"[...] }
+                .eraseToAnyParser()
+
+
             let seperator = OneOf {
                 ": "
                 " #"
             }
 
-            let rest = Prefix<Substring> { !$0.isWhitespace }
+            let rest = Prefix<Substring> { !$0.isNewline }
 
             let footer = Parse {
-                wordToken
+                OneOf {
+                    breakingWordToken
+                    breakingWordHyphenToken
+                    wordToken
+                }
                 seperator
                 rest
             }.map { wordToken, value in

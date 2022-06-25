@@ -15,9 +15,13 @@ final class ConventionalCommitsFooterTests: XCTestCase {
 
     func testSingleBreakingChange() throws {
 
+        // Given
         let footerMessage = "BREAKING CHANGE: refactor to use JavaScript features not available in Node 6."
+
+        // When
         let footer = try ConventionalCommit.Footer(input: footerMessage)
 
+        // Then
         XCTAssertEqual(footer.wordToken, "BREAKING CHANGE")
         XCTAssertEqual(footer.value, "refactor to use JavaScript features not available in Node 6.")
         XCTAssertEqual(footer.isBreaking, true)
@@ -75,12 +79,4 @@ final class ConventionalCommitsFooterTests: XCTestCase {
         XCTAssertEqual(footers[1].wordToken , "Refs")
         XCTAssertEqual(footers[1].value , "133")
     }
-
-    static var allTests = [
-        ("testSingleBreakingChange", testSingleBreakingChange),
-        ("testSingleBreakingChangeHypen", testSingleBreakingChangeHypen),
-        ("testSingleColonSeperated", testSingleColonSeperated),
-        ("testSingleHashtagSeperated", testSingleHashtagSeperated),
-        ("testMultipleFooters", testMultipleFooters),
-    ]
 }

@@ -6,6 +6,7 @@
 //
 
 import Parsing
+import Foundation
 
 // MARK: - Conventional Commit
 
@@ -59,7 +60,7 @@ extension ConventionalCommit {
            if substring == nil {
                return nil
            } else {
-               let str = String(substring!)
+               let str = String(substring!).trimmingCharacters(in: CharacterSet.newlines)
 
                if (str.isEmpty) {
                    return nil
@@ -96,7 +97,7 @@ extension ConventionalCommit {
 
         let footersParser: AnyParser<Substring, [Footer]> = Parse {
             Skip {
-                Whitespace(2, .vertical)
+                Optionally { Whitespace(1, .vertical) }
             }
             Many {
                 ConventionalCommit.Footer.parser
@@ -107,12 +108,8 @@ extension ConventionalCommit {
 
         let parser = Parse {
             ConventionalCommit.Header.parser
-            Optionally {
-                bodyParser
-            }
-            Optionally {
-                footersParser
-            }
+            Optionally { bodyParser }
+            Optionally { footersParser }
         }
         .map { (header, body, footers) in
             ConventionalCommit(
